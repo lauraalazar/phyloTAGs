@@ -1,3 +1,5 @@
+## phyloTAGs
+
 A previous survey of Colombians (de la Cuesta et al 2018 Scie. Rep) found enrichment of members of the families  Lachnospirace and Ruminococcaceae, and a contrasting association between their diversity and abundance with cardiometabolic risk: while Lachnospiracea showed correlation with high risk, Ruminococcacea did with low risk. These results led to the question whether markers of less conserved genes could help gain better resolution of the diversity within these families
 We used primers to amplify the less conserved genes dna Kinase1 and gyraseB. Here we present the steps for a microbial community analysis using these markers. The steps include:
 
@@ -5,7 +7,11 @@ We used primers to amplify the less conserved genes dna Kinase1 and gyraseB. Her
 2) Assemble (Flash, add commands)
 3) Denoising (deblur and dada2)
 4) Classification (Struo)
-5) Diversity analysis (phyloseq)
-6) Differential abundance (Deseq2)
+5) Diversity analysis (phyloseq) and Differential abundance (Deseq2)
+  i) scritp for pre-processing (phyloTAGs_preprocessing.R): read files, load GTDB table and create phyloseq object
+  ii) script for community analysis (phyloTAGs_community.R): alpha- and beta-diversity 
+  iii) script for differential abundance (phyloTAGs_diffab.R)
+
+   
 
 
