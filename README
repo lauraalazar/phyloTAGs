@@ -11,7 +11,7 @@ We used primers to amplify the less conserved genes dna Kinase1 and gyraseB. Her
   i) script for pre-processing (phylotags_preprocessing.R): read files, load GTDB table and create phyloseq object
   ii) script for diversity analysis (phylotags_diversity.R): alpha-diversity 
   iii) script for plots (phylotags_plots.R)
-
-   
+  
+PhyloTags_notebook.Rmd contains a summary of the results in tables and plots
 
 
