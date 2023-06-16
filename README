@@ -8,9 +8,9 @@ We used primers to amplify the less conserved genes dna Kinase1 and gyraseB. Her
 3) Denoising (deblur and dada2)
 4) Classification (Struo)
 5) Diversity analysis (phyloseq) and Differential abundance (Deseq2)
-  i) scritp for pre-processing (phyloTAGs_preprocessing.R): read files, load GTDB table and create phyloseq object
-  ii) script for community analysis (phyloTAGs_community.R): alpha- and beta-diversity 
-  iii) script for differential abundance (phyloTAGs_diffab.R)
+  i) script for pre-processing (phylotags_preprocessing.R): read files, load GTDB table and create phyloseq object
+  ii) script for diversity analysis (phylotags_diversity.R): alpha-diversity 
+  iii) script for plots (phylotags_plots.R)
 
    
 
