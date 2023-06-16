@@ -1,0 +1,210 @@
+---
+title: "PhyloTags"
+author: "Laura Salazar-Jaramillo"
+date: "2023-01-19"
+output:
+  html_notebook:
+    fig_caption: yes
+  html_document:
+    df_print: paged
+editor_options:
+  chunk_output_type: inline
+---
+
+## Preprocessing
+
+A phyloseq object is first created for each marker from the count tables, trees, taxonomy and sequences
+
+```{r cache=TRUE,results='hide',warning=FALSE,echo=FALSE,message=FALSE,cache=TRUE}
+#setwd("G:/BackUp_vidarium/BackUp_2023enero/proyectos/phylotags/")
+source("G:/BackUp_vidarium/BackUp_2023enero/proyectos/phylotags/articulo/scripts/phylotags_preprocessing.R")
+source("G:/BackUp_vidarium/BackUp_2023enero/proyectos/phylotags/articulo/scripts/phylotags_diversity.R")
+#source("G:/BackUp_vidarium/BackUp_2023enero/proyectos/phylotags/articulo/scripts/phylotags_plots.R")
+#library(kableExtra)
+library(dplyr)
+library(phyloseq)
+
+```
+
+## Diversity Analyisis
+
+Two models were run, a binary model and a continuous model for each genus of the selected families within Clostridia
+
+```{r,diversity,results='hide',warning=FALSE,echo=FALSE,message=FALSE,cache=TRUE}
+#source("G:/BackUp_vidarium/BackUp_2023enero/proyectos/phylotags/articulo/scripts/phylotags_diversity.R")
+
+```
+
+## Binary Model for Families
+
+### dnaK
+
+```{r, dnak_bin_fam,results='show',warning=FALSE,echo=FALSE,message=FALSE}
+
+dnak_tax_classfam <- as.data.frame(unique(phyloseq::tax_table(dnak_physeq_dada2)[,c("class","family")]))
+dnak_tax_classfam$family<- str_replace_all(dnak_tax_classfam$family, "-","_")
+dnak_glmbin_fam.sigtab %>%
+    left_join(dnak_tax_classfam,by=c("taxa"="family")) %>%
+    filter(class%in%c("Clostridia","Clostridia_A","c__Clostridia")) %>%
+    mutate(taxa=str_replace_all(taxa, "f__",""))
+
+```
+
+### gyrB
+
+```{r, gyrB_bin_fam,results='show',warning=FALSE,echo=FALSE,message=FALSE}
+gyrB_tax_classfam <- as.data.frame(unique(phyloseq::tax_table(gyrB_physeq_dada2)[,c("class","family")]))
+gyrB_tax_classfam$family<- str_replace_all(gyrB_tax_classfam$family, "-","_")
+gyrB_glmbin_fam.sigtab %>%
+    left_join(gyrB_tax_classfam,by=c("taxa"="family")) %>%
+    filter(class%in%c("Clostridia","Clostridia_A","c__Clostridia"))
+
+```
+
+
+```
+
+## Continuous Model for Families
+
+### dnaK
+
+```{r, dnak_cont_fam_table,results='show',warning=FALSE,echo=FALSE,message=FALSE}
+
+dnak_glmcont_fam.sigtab %>%
+    left_join(dnak_tax_classfam,by=c("taxa"="family")) %>%
+    filter(class%in%c("Clostridia","Clostridia_A","c__Clostridia")) %>%
+    mutate(taxa=str_replace_all(taxa, "f__","")) 
+
+```
+
+## Significant families for dnaK with corresponding plot for 16S
+
+```{r, dnak_cont_fam_plot,results='show',warning=FALSE,echo=FALSE,message=FALSE}
+
+oscillo_fam.plot
+
+```
+
+### gyrB
+
+```{r, gyrB_cont_fam,results='show',warning=FALSE,echo=FALSE,message=FALSE}
+
+gyrB_glmcont_fam.sigtab %>%
+    left_join(gyrB_tax_classfam,by=c("taxa"="family")) %>%
+    filter(class%in%c("Clostridia","Clostridia_A","c__Clostridia"))  %>%
+    mutate(taxa=str_replace_all(taxa, "f__",""))
+
+```
+
+## Significant families for gyrB with corresponding plot for 16S
+
+```{r, gyrB_cont_fam_plot,results='show',warning=FALSE,echo=FALSE,message=FALSE}
+
+gyrB_fam.plot
+
+```
+
+### 16S
+
+```{r, 16S_cont_fam,results='show',warning=FALSE,echo=FALSE,message=FALSE}
+
+ssu_glmcont_fam.sigtab %>%
+    left_join(ssu_tax_classfam,by=c("taxa"="family")) %>%
+    filter(class%in%c("Clostridia","Clostridia_A","c__Clostridia")) 
+
+```
+
+## Binary Model for Genera
+
+### dnaK
+
+```{r, dnak_bin_gen,results='show',warning=FALSE,echo=FALSE,message=FALSE}
+dnak_tax_famgenus <- as.data.frame(unique(phyloseq::tax_table(dnak_physeq_dada2)[,c("class","family","genus")]))
+dnak_tax_famgenus$genus<- str_replace_all(dnak_tax_famgenus$genus, "-","_")
+dnak_glmbin_gen.sigtab %>%
+    left_join(select(rbind(dnak_glmbin_gen.acuta_dnak,dnak_glmbin_gen.oscillo_dnak),taxa,padj),by="taxa") %>%
+    left_join(dnak_tax_famgenus,by=c("taxa"="genus")) %>%
+    filter(class%in%c("Clostridia","Clostridia_A","c__Clostridia"))  %>%
+    mutate(taxa=str_replace_all(taxa, "g__",""))  %>%
+    mutate(family=str_replace_all(family, "f__",""))  %>%
+      select(-class)
+
+
+```
+
+## Significant genera for dnaK for binary model
+
+Representation in boxes is according to the binary model
+
+
+```{r, gyrB_bin_gen_plot,results='show',warning=FALSE,echo=FALSE,message=FALSE}
+
+plot_grid(cag170_bin.boxplot, cag488_bin.boxplot, cag83_bin.boxplot, er4_bin.boxplot, ncol=2,nrow=2)
+
+```
+
+### gyrB
+
+```{r, gyrB_bin_gen,results='show',warning=FALSE,echo=FALSE,message=FALSE}
+gyrB_tax_famgenus <- as.data.frame(unique(phyloseq::tax_table(gyrB_physeq_dada2)[,c("class","family","genus")]))
+gyrB_tax_famgenus$genus<- str_replace_all(gyrB_tax_famgenus$genus, "-","_")
+gyrB_glmbin_gen.sigtab %>%
+    left_join(gyrB_tax_famgenus,by=c("taxa"="genus")) %>%
+    filter(class%in%c("Clostridia","Clostridia_A","c__Clostridia"))  %>%
+    mutate(taxa=str_replace_all(taxa, "g__",""))  %>%
+    mutate(family=str_replace_all(family, "f__",""))  %>%
+      select(-class)
+```
+
+### 16S
+
+```{r, 16S_bin_gen_addfam,results='show',warning=FALSE,echo=FALSE,message=FALSE}
+ssu_tax <- as.data.frame(unique(phyloseq::tax_table(ssu_physeq_dada2)[,c("class","family","genus")]))
+ssu_tax$genus<- str_replace_all(ssu_tax$genus, "-","_")
+ssu_glmbin_gen.sigtab %>%
+    left_join(select(rbind(ssu_glmbin_gen.lachno_ssu,UBA1381_glmbin_gen.UBA1381_ssu,ssu_glmbin_gen.oscillo_ssu,cag138_glmbin_gen.cag138_ssu,cag74_glmbin_gen.cag74_ssu),taxa,padj),by="taxa") %>%
+    left_join(ssu_tax,by=c("taxa"="genus")) %>%
+    filter(class%in%c("Clostridia","Clostridia_A","c__Clostridia"))  %>%
+      select(-class)
+
+```
+
+## Continuous Model for Genera
+
+### dnaK
+
+```{r, dnak_cont_gen,results='show',warning=FALSE,echo=FALSE,message=FALSE}
+
+dnak_glmcont_gen.sigtab %>%
+    left_join(select(dnak_glmcont_gen.acuta_dnak,taxa,padj),by="taxa") %>%
+    left_join(dnak_tax_famgenus,by=c("taxa"="genus")) %>%
+    filter(class%in%c("Clostridia","Clostridia_A","c__Clostridia"))  %>%
+    mutate(taxa=str_replace_all(taxa, "g__",""))  %>%
+    mutate(family=str_replace_all(family, "f__",""))  %>%
+      select(-class)
+
+```
+
+### gyrB
+
+```{r, gyrB_cont_gen,results='show',warning=FALSE,echo=FALSE,message=FALSE}
+gyrB_glmcont_gen.sigtab %>%
+    left_join(select(gyrB_glmcont_gen.genera_gyrB,taxa,p.adjust),by="taxa") %>%
+    left_join(gyrB_tax_famgenus,by=c("taxa"="genus")) %>%
+    filter(class%in%c("Clostridia","Clostridia_A","c__Clostridia"))  %>%
+    mutate(taxa=str_replace_all(taxa, "g__",""))  %>%
+    mutate(family=str_replace_all(family, "f__",""))  %>%
+      select(-class)
+
+```
+
+### 16S
+
+```{r, 16S_cont_gen_addfam,results='show',warning=FALSE,echo=FALSE,message=FALSE}
+ssu_glmcont_gen.sigtab %>%
+    left_join(select(acuta_glmcont_gen.acuta_ssu,taxa,padj),by="taxa") %>%
+    left_join(ssu_tax,by=c("taxa"="genus")) %>%
+    filter(class%in%c("Clostridia","Clostridia_A","c__Clostridia"))  %>%
+      select(-class)
+
+```
